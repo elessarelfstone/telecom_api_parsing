@@ -56,7 +56,7 @@ class TelecomkzApiParsing:
             _i = ClientInfo(*i)
 
             url = URL_PATTERN.format(_i.iin, f'7{_i.enriched_mobile_phone}')
-            r = requests.get(url, headers=headers)
+            r = requests.get(url, headers=headers, verify=False)
             print(r.json())
             if r.status_code == 200:
                 _i.status = '1' if r.json()['data']['verification_state'] else '0'
@@ -67,8 +67,10 @@ class TelecomkzApiParsing:
             print(url)
 
 
-rows = read_tsv('C:\\Users\\elessar\\bmg_1.csv')
-out_fpath = 'C:\\Users\\elessar\\out1.csv'
+# rows = read_tsv('C:\\Users\\elessar\\bmg_1.csv')
+rows = read_tsv(os.path.join(os.path.expanduser('~'), 'bmg_1.csv'))
+# out_fpath = 'C:\\Users\\elessar\\out1.csv'
+out_fpath = os.path.join(os.path.expanduser('~'), 'out1.csv')
 p = TelecomkzApiParsing(rows, out_fpath)
 p.parse()
 
