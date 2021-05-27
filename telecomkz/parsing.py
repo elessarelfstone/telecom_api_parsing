@@ -1,9 +1,8 @@
 import os
-import dataclasses
-from dataclasses import dataclass
 from time import sleep
 from typing import List
 
+import attr
 import requests
 
 from telecomkz.authorization import TokenManager
@@ -11,14 +10,14 @@ from settings import URL_PATTERN, HEADERS
 from utils import replace_fext, read_tsv, append_file, read_lines
 
 
-@dataclass
+@attr.s
 class ClientInfo:
-    customer_id: str = None
-    local_abonent_id: str = None
-    filial_id: str = None
-    iin: str = None
-    enriched_mobile_phone: str = None
-    status: str = None
+    customer_id = attr.ib(default='')
+    local_abonent_id = attr.ib(default='')
+    filial_id = attr.ib(default='')
+    iin = attr.ib(default='')
+    enriched_mobile_phone = attr.ib(default='')
+    status = attr.ib(default='')
 
 
 class TelecomkzApiParsing:
@@ -54,16 +53,15 @@ class TelecomkzApiParsing:
             headers = HEADERS
             headers['Authorization'] = 'Bearer {}'.format(self.http.token)
             _i = ClientInfo(*i)
-
             url = URL_PATTERN.format(_i.iin, f'7{_i.enriched_mobile_phone}')
             r = requests.get(url, headers=headers, verify=False)
             print(r.json())
             if r.status_code == 200:
                 _i.status = '1' if r.json()['data']['verification_state'] else '0'
-                tpl = dataclasses.astuple(_i)
+                tpl = attr.astuple(_i)
                 append_file(self.output_csv_fpath, ','.join(tpl))
             print(_i)
-            sleep(2)
+            sleep(1.5)
             print(url)
 
 
