@@ -60,7 +60,7 @@ class TelecomkzApiParsing:
                 tpl = attr.astuple(_i)
                 append_file(self.output_csv_fpath, ','.join(tpl))
             print(_i)
-            sleep(1.5)
+            sleep(3)
             print(url)
 
 
