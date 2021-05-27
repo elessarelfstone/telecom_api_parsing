@@ -3,3 +3,4 @@ oauthlib
 httpx
 python-dotenv
 attrs
+requests-oauthlib
