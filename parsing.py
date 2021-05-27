@@ -1,13 +1,12 @@
-import os
 from time import sleep
 from typing import List
 
 import attr
 import requests
 
-from telecomkz.authorization import TokenManager
+from authorization import TokenManager
 from settings import URL_PATTERN, HEADERS
-from utils import replace_fext, read_tsv, append_file, read_lines
+from utils import replace_fext, append_file
 
 
 @attr.s
@@ -65,10 +64,4 @@ class TelecomkzApiParsing:
             print(url)
 
 
-# rows = read_tsv('C:\\Users\\elessar\\bmg_1.csv')
-rows = read_tsv(os.path.join(os.path.expanduser('~'), 'bmg_1.csv'))
-# out_fpath = 'C:\\Users\\elessar\\out1.csv'
-out_fpath = os.path.join(os.path.expanduser('~'), 'out1.csv')
-p = TelecomkzApiParsing(rows, out_fpath)
-p.parse()
 
