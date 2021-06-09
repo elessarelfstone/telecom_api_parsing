@@ -48,20 +48,24 @@ class TelecomkzApiParsing:
         pass
 
     def parse(self):
+        headers = HEADERS
+        headers['Authorization'] = 'Bearer {}'.format(self.http.token)
         for i in self.info:
-            headers = HEADERS
-            headers['Authorization'] = 'Bearer {}'.format(self.http.token)
             _i = ClientInfo(*i)
             url = URL_PATTERN.format(_i.iin, f'7{_i.enriched_mobile_phone}')
-            r = requests.get(url, headers=headers, verify=False)
-            print(r.json())
-            if r.status_code == 200:
-                _i.status = '1' if r.json()['data']['verification_state'] else '0'
-                tpl = attr.astuple(_i)
-                append_file(self.output_csv_fpath, ','.join(tpl))
-            print(_i)
-            sleep(5)
-            print(url)
+            try:
+                r = requests.get(url, headers=headers, verify=False)
+                print(r.json())
+                if r.status_code == 200:
+                    _i.status = '1' if r.json()['data']['verification_state'] else '0'
+                    tpl = attr.astuple(_i)
+                    append_file(self.output_csv_fpath, ','.join(tpl))
+                print(_i)
+                sleep(6)
+                print(url)
+            except Exception:
+                sleep(14400)
+
 
 
 
