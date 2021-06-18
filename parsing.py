@@ -3,6 +3,8 @@ from typing import List
 
 import attr
 import requests
+from requests import ConnectionError
+
 
 from authorization import TokenManager
 from settings import URL_PATTERN, HEADERS
@@ -63,9 +65,7 @@ class TelecomkzApiParsing:
                 print(_i)
                 sleep(6)
                 print(url)
+
             except Exception:
                 sleep(14400)
-
-
-
-
+                self.http.set_token()
