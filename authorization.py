@@ -6,6 +6,7 @@ from httpx import post
 from oauthlib.oauth2 import LegacyApplicationClient
 from requests_oauthlib import OAuth2Session
 
+from utils import append_file
 from settings import (TOKEN_URL, CLIENT_ID, CLIENT_SECRET, USER_NAME, PASSWORD)
 
 
@@ -25,9 +26,8 @@ class TokenManager:
 
     @property
     def token(self):
-        if datetime.now() > self.expires_at:
-            self.set_token()
-
+        # self.set_token()
+        # append_file('access_tokens.txt', self.access_token)
         return self.access_token
 
     @staticmethod

@@ -3,7 +3,7 @@ from typing import List
 
 import attr
 import requests
-from requests import ConnectionError
+from requests import ConnectionError, HTTPError
 
 
 from authorization import TokenManager
@@ -51,21 +51,27 @@ class TelecomkzApiParsing:
 
     def parse(self):
         headers = HEADERS
-        headers['Authorization'] = 'Bearer {}'.format(self.http.token)
         for i in self.info:
+            headers['Authorization'] = 'Bearer {}'.format(self.http.token)
             _i = ClientInfo(*i)
             url = URL_PATTERN.format(_i.iin, f'7{_i.enriched_mobile_phone}')
             try:
                 r = requests.get(url, headers=headers, verify=False)
                 print(r.json())
+                print(r.status_code)
                 if r.status_code == 200:
                     _i.status = '1' if r.json()['data']['verification_state'] else '0'
                     tpl = attr.astuple(_i)
                     append_file(self.output_csv_fpath, ','.join(tpl))
+                elif r.status_code == 401:
+                    self.http.set_token()
                 print(_i)
                 sleep(6)
                 print(url)
 
-            except Exception:
+            except HTTPError as e:
+                print(e)
+                print(self.http.token)
+            except ConnectionError:
                 sleep(14400)
                 self.http.set_token()
